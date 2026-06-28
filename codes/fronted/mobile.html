@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="校园失物招领">
+    <meta name="theme-color" content="#5B9BD5">
+    <title>校园智能失物招领</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #5B9BD5;
+            --primary-light: #8EC3EB;
+            --success: #6BCB77;
+            --danger: #FF6B6B;
+            --warning: #FFD93D;
+            --dark: #2D3436;
+            --gray: #636E72;
+            --light-gray: #DFE6E9;
+            --bg: #F5F6FA;
+            --white: #FFFFFF;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--dark);
+            min-height: 100vh;
+            padding-bottom: 70px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .header-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .header-title span {
+            color: var(--primary);
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 12px 16px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 14px 10px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-value.green {
+            color: var(--success);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--gray);
+            margin-top: 2px;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #E8F4FD 0%, #D4EDDA 100%);
+            margin: 0 16px 16px;
+            padding: 20px 16px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .hero-desc {
+            font-size: 13px;
+            color: var(--gray);
+            margin-bottom: 16px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: var(--white);
+            padding: 0 16px;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 0;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray);
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Content Sections */
+        .section {
+            padding: 0 16px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .card-form {
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .form-header {
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .form-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .form-icon.lost {
+            background: #FFE0E0;
+        }
+
+        .form-icon.found {
+            background: #D4EDDA;
+        }
+
+        .form-title {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .form-body {
+            padding: 16px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--dark);
+        }
+
+        .form-label .required {
+            color: var(--danger);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            font-size: 14px;
+            background: #FAFAFA;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--white);
+        }
+
+        .form-textarea {
+            min-height: 70px;
+            resize: none;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 13px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #4A8BC7);
+            color: white;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        /* Match Result */
+        .match-result {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(91,155,213,0.2);
+            margin: 0 16px 16px;
+        }
+
+        .match-score {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .match-score-value {
+            font-size: 48px;
+            font-weight: 700;
+        }
+
+        .match-score-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .match-comparison {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 12px;
+            padding: 16px;
+            align-items: center;
+        }
+
+        .match-item {
+            text-align: center;
+        }
+
+        .match-item-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--light-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 8px;
+        }
+
+        .match-item-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .match-vs {
+            font-size: 20px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .match-details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            padding: 0 16px 16px;
+        }
+
+        .score-item {
+            text-align: center;
+            padding: 10px 4px;
+            background: #F8F9FA;
+            border-radius: 8px;
+        }
+
+        .score-item-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .score-item-label {
+            font-size: 10px;
+            color: var(--gray);
+        }
+
+        .match-actions {
+            display: flex;
+            gap: 10px;
+            padding: 0 16px 16px;
+        }
+
+        .match-actions .btn {
+            flex: 1;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            display: flex;
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
+            z-index: 100;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 0;
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 11px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .empty-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 6px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -10px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        /* Hidden sections */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-logo">
+            <div class="header-icon">🎯</div>
+            <div class="header-title">校园<span>失物招领</span></div>
+        </div>
+    </header>
+
+    <!-- Home Page -->
+    <div id="homePage" class="page active">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="statLost">0</div>
+                <div class="stat-label">失物登记</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statFound">0</div>
+                <div class="stat-label">招领登记</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value green" id="statMatch">0</div>
+                <div class="stat-label">成功匹配</div>
+            </div>
+        </div>
+
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-title">🤖 AI智能匹配</div>
+            <div class="hero-desc">快速找到您的失物</div>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn btn-primary" onclick="showPage('report')" style="flex:1;">📝 登记失物</button>
+                <button class="btn btn-success" onclick="showPage('found')" style="flex:1;">📋 登记招领</button>
+            </div>
+        </div>
+
+        <!-- Recent Matches -->
+        <div class="section">
+            <div class="section-title">📊 最近匹配</div>
+            <div id="recentList">
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <div class="empty-title">暂无匹配记录</div>
+                    <div class="empty-desc">开始登记失物或招领信息</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Lost Page -->
+    <div id="reportPage" class="page">
+        <div class="card card-form">
+            <div class="form-header">
+                <div class="form-icon lost">📦</div>
+                <div class="form-title">登记失物</div>
+            </div>
+            <div class="form-body">
+                <div class="form-group">
+                    <label class="form-label">物品名称 <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="lostName" placeholder="如：蓝色钱包">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">物品类别 <span class="required">*</span></label>
+                    <select class="form-select" id="lostCategory">
+                        <option value="">选择类别</option>
+                        <option value="证件卡片">🪪 证件卡片</option>
+                        <option value="电子设备">📱 电子设备</option>
+                        <option value="箱包">🎒 箱包</option>
+                        <option value="书籍文具">📚 书籍文具</option>
+                        <option value="钥匙">🔑 钥匙</option>
+                        <option value="其他">📦 其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">物品描述 <span class="required">*</span></label>
+                    <textarea class="form-textarea" id="lostDesc" placeholder="描述物品特征"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">丢失地点</label>
+                    <input type="text" class="form-input" id="lostLocation" placeholder="如：图书馆">
+                </div>
+                <button class="btn btn-primary" onclick="submitLost()">🔍 寻找匹配</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Found Page -->
+    <div id="foundPage" class="page">
+        <div class="card card-form">
+            <div class="form-header">
+                <div class="form-icon found">🎁</div>
+                <div class="form-title">登记招领</div>
+            </div>
+            <div class="form-body">
+                <div class="form-group">
+                    <label class="form-label">物品名称 <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="foundName" placeholder="如：蓝色钱包">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">物品类别 <span class="required">*</span></label>
+                    <select class="form-select" id="foundCategory">
+                        <option value="">选择类别</option>
+                        <option value="证件卡片">🪪 证件卡片</option>
+                        <option value="电子设备">📱 电子设备</option>
+                        <option value="箱包">🎒 箱包</option>
+                        <option value="书籍文具">📚 书籍文具</option>
+                        <option value="钥匙">🔑 钥匙</option>
+                        <option value="其他">📦 其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">物品描述 <span class="required">*</span></label>
+                    <textarea class="form-textarea" id="foundDesc" placeholder="描述物品特征"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">捡到地点</label>
+                    <input type="text" class="form-input" id="foundLocation" placeholder="如：图书馆">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">保管方式</label>
+                    <select class="form-select" id="storageMethod">
+                        <option value="">选择保管方式</option>
+                        <option value="食堂">🍽️ 食堂</option>
+                        <option value="宿舍">🏠 宿舍</option>
+                        <option value="值班室">📋 值班室</option>
+                        <option value="图书馆">📚 图书馆</option>
+                        <option value="保卫处">🛡️ 保卫处</option>
+                    </select>
+                </div>
+                <button class="btn btn-success" onclick="submitFound()">📋 发布招领</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Match Page -->
+    <div id="matchPage" class="page">
+        <div class="section">
+            <div class="section-title">🎯 匹配结果</div>
+        </div>
+        <div id="matchResult">
+            <div class="empty-state">
+                <div class="empty-icon">🔍</div>
+                <div class="empty-title">暂无匹配</div>
+                <div class="empty-desc">登记失物后查看匹配结果</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Page -->
+    <div id="profilePage" class="page">
+        <div class="section">
+            <div class="card" style="text-align: center; padding: 30px 16px;">
+                <div style="width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary-light), var(--primary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; color: white; margin: 0 auto 12px;">👤</div>
+                <div style="font-size: 17px; font-weight: 600;">校园用户</div>
+                <div style="color: var(--gray); font-size: 13px;">ID: 2408090602043</div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="card">
+                <div style="display: flex; justify-content: space-around; padding: 16px 0;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 20px; font-weight: 700; color: var(--primary);">3</div>
+                        <div style="font-size: 12px; color: var(--gray);">失物登记</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 20px; font-weight: 700; color: var(--success);">2</div>
+                        <div style="font-size: 12px; color: var(--gray);">招领登记</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 20px; font-weight: 700; color: var(--danger);">1</div>
+                        <div style="font-size: 12px; color: var(--gray);">成功匹配</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" onclick="showPage('home')">
+            <span class="nav-icon">🏠</span>
+            <span>首页</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showPage('report')">
+            <span class="nav-icon">📝</span>
+            <span>寻物</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showPage('found')">
+            <span class="nav-icon">📋</span>
+            <span>招领</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showPage('match')">
+            <span class="nav-icon">🎯</span>
+            <span>匹配</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showPage('profile')">
+            <span class="nav-icon">👤</span>
+            <span>我的</span>
+        </a>
+    </nav>
+
+    <script>
+        // Data
+        let lostItems = [];
+        let foundItems = [
+            { id: 'F001', name: '蓝色钱包', category: '证件卡片', description: '蓝色钱包，内有身份证', location: '图书馆三楼', storage: '图书馆' },
+            { id: 'F002', name: '黑色笔记本电脑', category: '电子设备', description: '黑色笔记本电脑，有红色贴纸', location: '教学楼302', storage: '值班室' },
+            { id: 'F003', name: '红色手机', category: '电子设备', description: '红色手机，屏幕有保护膜', location: '操场', storage: '保卫处' }
+        ];
+        let currentMatch = null;
+        let stats = { lost: 0, found: 3, match: 0 };
+
+        // Category icons
+        const categoryIcons = {
+            '证件卡片': '🪪', '电子设备': '📱', '箱包': '🎒',
+            '书籍文具': '📚', '钥匙': '🔑', '其他': '📦'
+        };
+
+        // Show page
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            const pageMap = {
+                'home': 'homePage',
+                'report': 'reportPage',
+                'found': 'foundPage',
+                'match': 'matchPage',
+                'profile': 'profilePage'
+            };
+            
+            document.getElementById(pageMap[page]).classList.add('active');
+            event.target.closest('.nav-item')?.classList.add('active');
+        }
+
+        // Submit lost item
+        function submitLost() {
+            const name = document.getElementById('lostName').value;
+            const category = document.getElementById('lostCategory').value;
+            const desc = document.getElementById('lostDesc').value;
+            const location = document.getElementById('lostLocation').value;
+
+            if (!name || !category || !desc) {
+                showToast('请填写必填项');
+                return;
+            }
+
+            const item = { id: 'L' + Date.now(), name, category, description: desc, location };
+            lostItems.push(item);
+            stats.lost++;
+            updateStats();
+            findMatches(item);
+            showPage('match');
+            showToast('正在为您匹配...');
+        }
+
+        // Submit found item
+        function submitFound() {
+            const name = document.getElementById('foundName').value;
+            const category = document.getElementById('foundCategory').value;
+            const desc = document.getElementById('foundDesc').value;
+            const location = document.getElementById('foundLocation').value;
+            const storage = document.getElementById('storageMethod').value;
+
+            if (!name || !category || !desc) {
+                showToast('请填写必填项');
+                return;
+            }
+
+            const item = { id: 'F' + Date.now(), name, category, description: desc, location, storage };
+            foundItems.push(item);
+            stats.found++;
+            updateStats();
+            clearForms('found');
+            showToast('招领信息已发布！');
+        }
+
+        // Clear forms
+        function clearForms(type) {
+            if (type === 'lost' || type === 'both') {
+                document.getElementById('lostName').value = '';
+                document.getElementById('lostCategory').value = '';
+                document.getElementById('lostDesc').value = '';
+                document.getElementById('lostLocation').value = '';
+            }
+            if (type === 'found' || type === 'both') {
+                document.getElementById('foundName').value = '';
+                document.getElementById('foundCategory').value = '';
+                document.getElementById('foundDesc').value = '';
+                document.getElementById('foundLocation').value = '';
+                document.getElementById('storageMethod').value = '';
+            }
+        }
+
+        // Find matches
+        function findMatches(lostItem) {
+            const matches = [];
+            
+            foundItems.forEach(found => {
+                const score = calculateScore(lostItem, found);
+                if (score >= 0.4) {
+                    matches.push({ lost: lostItem, found, score });
+                }
+            });
+
+            matches.sort((a, b) => b.score - a.score);
+
+            if (matches.length > 0) {
+                currentMatch = matches[0];
+                showMatchResult(currentMatch);
+            } else {
+                showNoMatch();
+            }
+        }
+
+        // Calculate match score
+        function calculateScore(lost, found) {
+            let score = 0;
+            
+            // Text similarity
+            const lostWords = new Set(lost.description.toLowerCase());
+            const foundWords = new Set(found.description.toLowerCase());
+            const common = [...lostWords].filter(x => foundWords.has(x));
+            score += (common.length / Math.max(lostWords.size, foundWords.size)) * 0.3;
+
+            // Category
+            if (lost.category === found.category) score += 0.2;
+
+            // Location
+            if (lost.location && found.location) {
+                if (lost.location === found.location) score += 0.15;
+            }
+
+            // Image (simulated)
+            score += 0.85 * 0.4;
+
+            // Time
+            score += 0.75 * 0.15;
+
+            return Math.min(1, score);
+        }
+
+        // Show match result
+        function showMatchResult(match) {
+            const score = Math.round(match.score * 100);
+            const level = score >= 80 ? '高匹配' : score >= 60 ? '中匹配' : '低匹配';
+            const icon = categoryIcons[match.found.category] || '📦';
+
+            document.getElementById('matchResult').innerHTML = `
+                <div class="match-result">
+                    <div class="match-score">
+                        <div class="match-score-value">${score}%</div>
+                        <div class="match-score-label">${level}</div>
+                    </div>
+                    <div class="match-comparison">
+                        <div class="match-item">
+                            <div class="match-item-icon">${categoryIcons[match.lost.category] || '📦'}</div>
+                            <div class="match-item-name">${match.lost.name}</div>
+                        </div>
+                        <div class="match-vs">≈</div>
+                        <div class="match-item">
+                            <div class="match-item-icon">${icon}</div>
+                            <div class="match-item-name">${match.found.name}</div>
+                        </div>
+                    </div>
+                    <div class="match-details">
+                        <div class="score-item">
+                            <div class="score-item-value">0.85</div>
+                            <div class="score-item-label">图像</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-item-value">${(match.score * 0.9).toFixed(2)}</div>
+                            <div class="score-item-label">文本</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-item-value">0.75</div>
+                            <div class="score-item-label">时间</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-item-value">0.80</div>
+                            <div class="score-item-label">地点</div>
+                        </div>
+                    </div>
+                    <div class="match-actions">
+                        <button class="btn btn-success" onclick="confirmMatch()">✅ 确认匹配</button>
+                        <button class="btn btn-outline" onclick="skipMatch()">➡️ 下一个</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Show no match
+        function showNoMatch() {
+            document.getElementById('matchResult').innerHTML = `
+                <div class="match-result">
+                    <div class="match-score" style="background: linear-gradient(135deg, #E0E0E0, #BDBDBD);">
+                        <div class="match-score-value">0%</div>
+                        <div class="match-score-label">暂无匹配</div>
+                    </div>
+                    <div style="text-align: center; padding: 30px;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">😔</div>
+                        <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px;">未找到匹配物品</div>
+                        <div style="color: var(--gray); font-size: 13px;">我们将持续为您匹配</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Confirm match
+        function confirmMatch() {
+            if (!currentMatch) return;
+            
+            stats.match++;
+            updateStats();
+
+            const index = foundItems.findIndex(item => item.id === currentMatch.found.id);
+            if (index > -1) foundItems.splice(index, 1);
+
+            addRecentMatch(currentMatch);
+            showToast('🎉 匹配成功！');
+            document.getElementById('matchResult').innerHTML = `
+                <div class="match-result">
+                    <div class="match-score" style="background: linear-gradient(135deg, #6BCB77, #5AB868);">
+                        <div class="match-score-value">✓</div>
+                        <div class="match-score-label">匹配成功</div>
+                    </div>
+                    <div style="text-align: center; padding: 30px;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">🎉</div>
+                        <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px;">请联系招领人认领</div>
+                        <div style="color: var(--gray); font-size: 13px;">保管地点：${currentMatch.found.storage || '待确认'}</div>
+                    </div>
+                </div>
+            `;
+            currentMatch = null;
+        }
+
+        // Skip match
+        function skipMatch() {
+            if (!currentMatch) return;
+
+            const index = foundItems.findIndex(item => item.id === currentMatch.found.id);
+            if (index > -1) foundItems.splice(index, 1);
+
+            if (foundItems.length > 0) {
+                const lostItem = lostItems[lostItems.length - 1];
+                findMatches(lostItem);
+            } else {
+                showNoMatch();
+            }
+        }
+
+        // Add recent match
+        function addRecentMatch(match) {
+            const list = document.getElementById('recentList');
+            if (list.querySelector('.empty-state')) {
+                list.innerHTML = '';
+            }
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-weight: 600;">${match.lost.name} ≈ ${match.found.name}</div>
+                        <div style="font-size: 12px; color: var(--gray); margin-top: 4px;">${match.lost.description.substring(0, 20)}...</div>
+                    </div>
+                    <span style="background: #D4EDDA; color: #155724; padding: 4px 10px; border-radius: 12px; font-size: 12px;">
+                        ${Math.round(match.score * 100)}%
+                    </span>
+                </div>
+            `;
+            list.insertBefore(card, list.firstChild);
+        }
+
+        // Update stats
+        function updateStats() {
+            document.getElementById('statLost').textContent = stats.lost;
+            document.getElementById('statFound').textContent = stats.found;
+            document.getElementById('statMatch').textContent = stats.match;
+        }
+
+        // Show toast
+        function showToast(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        // Initialize
+        updateStats();
+    </script>
+</body>
+</html>
